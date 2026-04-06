@@ -10,14 +10,27 @@ namespace ECommerceMVP
     {
         static void Main(string[] args)
         {
-            Order order = new Order { TotalAmount = 2450m };
-            OrderProcessingFacade facade = new OrderProcessingFacade();
-            facade.ProcessOrder(order);
-            facade.CancelOrder(order);
-            
-            order.TotalAmount = 5000m;
-            facade.ProcessOrder(order);
+            Order order = new Order
+            {
+                TotalAmount = 2450m,
+                InStock = false,
+                IsPaymentValid = true,
+            };
 
+            // Создаем цепочку обработчиков
+            IOrderHandler inventoryHandler = new InventoryCheckHandler();
+            IOrderHandler paymentHandler = new PaymentValidationHandler();
+            IOrderHandler shippingHandler = new ShippingValidationHandler();
+            IOrderHandler discountHandler = new DiscountValidationHandler();
+            
+            inventoryHandler.SetNext(paymentHandler);
+            paymentHandler.SetNext(shippingHandler);
+            shippingHandler.SetNext(discountHandler);
+            // Запускаем обработку заказа
+            inventoryHandler.Handle(order);
+            
+            if (order.FailureMessage != null) Console.WriteLine(order.FailureMessage);
+            
             Console.ReadLine();
         }
     }
