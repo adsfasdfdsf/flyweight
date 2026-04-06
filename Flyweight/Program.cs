@@ -10,23 +10,39 @@ namespace ECommerceMVP
     {
         static void Main(string[] args)
         {
-            // Использование Flyweight для создания продуктов
-            var flyweight = ProductFlyweightFactory.GetFlyweight("BrandA", "High Quality", "image.jpg");
-            var products = new List<Product>();
-            for (int i = 0; i < 10000; ++i)
+            // Выбор платежного шлюза (например, PayPal)
+            Console.WriteLine("Choose gateway: \n1. PayPalGateway\n2. CreditCardGateway");
+            var input = Console.ReadLine();
+            IPaymentGateway gateway = input switch
             {
-                var flyweightLoc = ProductFlyweightFactory.GetFlyweight("BrandA", "High Quality", "image.jpg");
-
-                products.Add(new Product(i + 1, "Laptop", 200m, flyweightLoc));
+                "1" => new PayPalGateway(),
+                "2" => new CreditCardGateway(),
+                _ => throw new NotImplementedException(),
+            };
+            
+            Console.WriteLine("Input amount to pay (PayPal balance is 1000)");
+            PaymentProcessor processor = new OnlinePaymentProcessor(gateway);
+            input = Console.ReadLine();
+            if (input == null)
+            {
+                processor.ProcessPayment(2450m);
+                Console.ReadLine();
+                return;
             }
-            Order order = new Order();
-            order.AddProduct(products[0]);
-            order.AddProduct(products[1]);
-            order.AddProduct(products[2]);
+            
+            int amount = int.Parse(input);
 
-            Console.WriteLine("Order Total (Flyweight): $" + order.GetTotalAmount());
-            Console.WriteLine($"Flyweight used: {flyweight.Brand}, {flyweight.Description}");
-            ProductFlyweightFactory.PrintStatistics();
+            try
+            {
+                processor.ProcessPayment(amount);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message + "\n ...Changing Strategy");
+                processor.ChangeGateway(new CreditCardGateway());
+                processor.ProcessPayment(amount);
+            }
+
             Console.ReadLine();
         }
     }
