@@ -10,27 +10,14 @@ namespace ECommerceMVP
     {
         static void Main(string[] args)
         {
-            Order order = new Order
-            {
-                TotalAmount = 2450m,
-                InStock = false,
-                IsPaymentValid = true,
-            };
+            decimal orderAmount = 2450m;
+            var orderContext = new OrderContext(orderAmount, "Electronics", "Samsung");
+            string discountCode = "DISCOUNT 10% ON ALL";
 
-            // Создаем цепочку обработчиков
-            IOrderHandler inventoryHandler = new InventoryCheckHandler();
-            IOrderHandler paymentHandler = new PaymentValidationHandler();
-            IOrderHandler shippingHandler = new ShippingValidationHandler();
-            IOrderHandler discountHandler = new DiscountValidationHandler();
-            
-            inventoryHandler.SetNext(paymentHandler);
-            paymentHandler.SetNext(shippingHandler);
-            shippingHandler.SetNext(discountHandler);
-            // Запускаем обработку заказа
-            inventoryHandler.Handle(order);
-            
-            if (order.FailureMessage != null) Console.WriteLine(order.FailureMessage);
-            
+            DiscountInterpreter interpreter = new DiscountInterpreter();
+            decimal discount = interpreter.Interpret(discountCode, orderContext);
+            Console.WriteLine($"Interpreter: Discount applied: ${discount}");
+
             Console.ReadLine();
         }
     }
