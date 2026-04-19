@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ECommerceMVP.Mediator;
+using ECommerceMVP.Mediator.Modules;
 
 namespace ECommerceMVP
 {
@@ -10,19 +12,14 @@ namespace ECommerceMVP
     {
         static void Main(string[] args)
         {
-            ProductCatalog catalog = new ProductCatalog(850);
-            catalog.AddProduct(new Iterator.Product(1, "Laptop", 1500m));
-            catalog.AddProduct(new Iterator.Product(2, "Smartphone", 800m));
-            catalog.AddProduct(new Iterator.Product(3, "Headphones", 150m));
-
-            Console.WriteLine("Iterator: Listing products in catalog:");
-            foreach (var product in catalog)
-            {
-                if (product.Price > 500m)
-                {
-                    Console.WriteLine($" - {product.Name} (${product.Price})");
-                }
-            }
+            IMediator mediator = new OrderMediator();
+            InventoryModule inventory = new InventoryModule(mediator);
+            PaymentModule payment = new PaymentModule(mediator);
+            ShippingModule shipping = new ShippingModule(mediator);
+            mediator.RegisterInventoryModule(inventory);
+            mediator.RegisterPaymentModule(payment);
+            mediator.RegisterShippingModule(shipping);
+            inventory.CheckInventory("Check this Order");
 
             Console.ReadLine();
         }
