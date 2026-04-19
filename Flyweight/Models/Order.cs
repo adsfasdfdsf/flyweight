@@ -8,4 +8,9 @@ public class Order
     public bool IsPaymentValid { get; set; }
     public string? FailureMessage { get; set; } = null;
     public decimal GetTotalAmount() => TotalAmount;
+
+    public void Accept(IOrderVisitor visitor)
+    {
+        visitor.Visit(this);
+    }
 }

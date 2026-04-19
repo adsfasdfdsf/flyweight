@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ECommerceMVP.Mediator;
 using ECommerceMVP.Mediator.Modules;
+using ECommerceMVP.Visitor;
 
 namespace ECommerceMVP
 {
@@ -12,16 +13,31 @@ namespace ECommerceMVP
     {
         static void Main(string[] args)
         {
-            IMediator mediator = new OrderMediator();
-            InventoryModule inventory = new InventoryModule(mediator);
-            PaymentModule payment = new PaymentModule(mediator);
-            ShippingModule shipping = new ShippingModule(mediator);
-            mediator.RegisterInventoryModule(inventory);
-            mediator.RegisterPaymentModule(payment);
-            mediator.RegisterShippingModule(shipping);
-            inventory.CheckInventory("Check this Order");
+            List<Order> orders = new List<Order>
+            {
+                new Order { TotalAmount = 1000m },
+                new Order { TotalAmount = 1500m },
+                new Order { TotalAmount = 800m }
+            };
 
-            Console.ReadLine();
+            List<IOrderVisitor> visitors = new List<IOrderVisitor>
+            {
+                new OrderReportVisitor(),
+                new StockAmountVisitor(),
+                new GeneralReportVisitor(),
+            };
+            foreach (var order in orders)
+            {
+                foreach (var visitor in visitors)
+                {
+                    order.Accept(visitor);
+                }
+            }
+
+            foreach (var visitor in visitors)
+            {
+                visitor.PrintReport();
+            }
         }
     }
 }
