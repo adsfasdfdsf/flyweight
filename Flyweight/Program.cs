@@ -10,13 +10,19 @@ namespace ECommerceMVP
     {
         static void Main(string[] args)
         {
-            decimal orderAmount = 2450m;
-            var orderContext = new OrderContext(orderAmount, "Electronics", "Samsung");
-            string discountCode = "DISCOUNT 10% ON ALL";
+            ProductCatalog catalog = new ProductCatalog(850);
+            catalog.AddProduct(new Iterator.Product(1, "Laptop", 1500m));
+            catalog.AddProduct(new Iterator.Product(2, "Smartphone", 800m));
+            catalog.AddProduct(new Iterator.Product(3, "Headphones", 150m));
 
-            DiscountInterpreter interpreter = new DiscountInterpreter();
-            decimal discount = interpreter.Interpret(discountCode, orderContext);
-            Console.WriteLine($"Interpreter: Discount applied: ${discount}");
+            Console.WriteLine("Iterator: Listing products in catalog:");
+            foreach (var product in catalog)
+            {
+                if (product.Price > 500m)
+                {
+                    Console.WriteLine($" - {product.Name} (${product.Price})");
+                }
+            }
 
             Console.ReadLine();
         }
