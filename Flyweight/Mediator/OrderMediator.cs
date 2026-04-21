@@ -2,21 +2,21 @@ namespace ECommerceMVP.Mediator;
 using ECommerceMVP.Mediator.Modules;
 public class OrderMediator: IMediator
 {
-    private InventoryModule _inventoryModule;
-    private PaymentModule _paymentModule;
-    private ShippingModule _shippingModule;
+    private IMediatorModule _inventoryModule;
+    private IMediatorModule _paymentModule;
+    private IMediatorModule _shippingModule;
 
-    public void RegisterInventoryModule(InventoryModule inventoryModule)
+    public void RegisterInventoryModule(IMediatorModule inventoryModule)
     {
         _inventoryModule = inventoryModule;
     }
 
-    public void RegisterPaymentModule(PaymentModule paymentModule)
+    public void RegisterPaymentModule(IMediatorModule paymentModule)
     {
         _paymentModule = paymentModule;
     }
 
-    public void RegisterShippingModule(ShippingModule shippingModule)
+    public void RegisterShippingModule(IMediatorModule shippingModule)
     {
         _shippingModule = shippingModule;
     }
@@ -27,10 +27,10 @@ public class OrderMediator: IMediator
         {
             case InventoryModule inventory:
                 
-                _paymentModule?.ValidatePayment(message);
+                _paymentModule?.OnNotify(message);
                 break;
             case PaymentModule payment:
-                _shippingModule?.ScheduleShipping(message);
+                _shippingModule?.OnNotify(message);
                 break;
             case ShippingModule shipping:
                 Console.WriteLine(message);

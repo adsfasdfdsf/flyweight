@@ -1,5 +1,5 @@
 namespace ECommerceMVP.Mediator.Modules;
-public class InventoryModule
+public class InventoryModule: IMediatorModule
 {
     private IMediator _mediator;
     public InventoryModule(IMediator mediator)
@@ -7,7 +7,7 @@ public class InventoryModule
         _mediator = mediator;
     }
 
-    public void CheckInventory(string order)
+    public void OnNotify(string order)
     {
         Console.WriteLine("InventoryModule");
         if (Random.Shared.Next(0, 2) == 0)

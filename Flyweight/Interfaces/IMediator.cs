@@ -3,8 +3,8 @@ using ECommerceMVP.Mediator.Modules;
 
 public interface IMediator
 {
-    void RegisterInventoryModule(InventoryModule inventoryModule);
-    void RegisterPaymentModule(PaymentModule paymentModule);
-    void RegisterShippingModule(ShippingModule shippingModule);
+    void RegisterInventoryModule(IMediatorModule inventoryModule);
+    void RegisterPaymentModule(IMediatorModule paymentModule);
+    void RegisterShippingModule(IMediatorModule shippingModule);
     void Notify(object sender, string message);
 }

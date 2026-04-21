@@ -1,6 +1,6 @@
 namespace ECommerceMVP.Mediator.Modules;
 
-public class ShippingModule
+public class ShippingModule: IMediatorModule
 {
     private IMediator _mediator;
 
@@ -9,7 +9,7 @@ public class ShippingModule
         _mediator = mediator;
     }
 
-    public void ScheduleShipping(string order)
+    public void OnNotify(string order)
     {
         if (order.ToLower() == "error")
         {

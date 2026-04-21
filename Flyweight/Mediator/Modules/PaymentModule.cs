@@ -1,6 +1,6 @@
 namespace ECommerceMVP.Mediator.Modules;
 
-public class PaymentModule
+public class PaymentModule: IMediatorModule
 {
     private IMediator _mediator;
 
@@ -9,7 +9,7 @@ public class PaymentModule
         _mediator = mediator;
     }
 
-    public void ValidatePayment(string order)
+    public void OnNotify(string order)
     {
         if (order.ToLower() == "error")
         {
